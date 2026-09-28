@@ -29,3 +29,23 @@ int readNumber()
     }
     return number;
 }
+void changeRepair(Pipe& pipe, bool status)
+{
+    pipe.isRepair = status;
+}
+
+void addPipe(Pipe& pipes)
+{
+    cout << "Enter pipe name: ";
+    getline(cin, pipes[count].name);
+    cout << "Enter kilometr mark: ";
+    pipes[count].kilometr_mark = readNumber();
+    cout << "Enter length: ";
+    pipes[count].length = readNumber();
+    cout << "Enter diameter: ";
+    pipes[count].diameter = readNumber();
+    cout << "Is the pipe under repair? (1 for yes, 0 for no): ";
+    int repairInput = readNumber();
+    pipes[count].isRepair = (repairInput == 1);
+    count++;
+}
