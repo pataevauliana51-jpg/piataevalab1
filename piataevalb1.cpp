@@ -3,12 +3,12 @@
 using namespace std;
 struct Pipe
 {
-    int kilometr_mark;
+    int kilometer_mark;
     int length;
     int diameter;
     string name;
     bool isRepair;
-}
+};
 struct Compress_Station 
 {
     string name;
@@ -20,7 +20,7 @@ int readNumber()
 {
     int number;
     cin >> number;
-    while (cin.fail() 
+    while (cin.fail())
     {
         cin.clear();
         cin.ignore(1000, '\n');
@@ -33,19 +33,39 @@ void changeRepair(Pipe& pipe, bool status)
 {
     pipe.isRepair = status;
 }
-
-void addPipe(Pipe& pipes)
+void addPipe(Pipe& pipe)
 {
     cout << "Enter pipe name: ";
-    getline(cin, pipes[count].name);
+    getline(cin>>ws, pipe.name);
+    while (pipe.name.empty()) {
+        cout << "Error. Name cannot be empty: ";
+        getline(cin >> ws, pipe.name);
+    }
     cout << "Enter kilometr mark: ";
-    pipes[count].kilometr_mark = readNumber();
+    pipe.kilometer_mark= readNumber();
+    while (pipe.kilometer_mark <= 0) {
+        cout << "Error. Kilometer mark cannot be negative: ";
+        pipe.kilometer_mark = readNumber();
+    }
     cout << "Enter length: ";
-    pipes[count].length = readNumber();
+    pipe.length = readNumber();
+    while (pipe.length <= 0) {
+        cout << "Error. Length must be positive: ";
+        pipe.length = readNumber();
+    }
     cout << "Enter diameter: ";
-    pipes[count].diameter = readNumber();
+    pipe.diameter = readNumber();
+    while (pipe.diameter <= 0) {
+        cout << "Error. Diameter must be positive: ";
+        pipe.diameter = readNumber();
+    }
+    int repair;
     cout << "Is the pipe under repair? (1 for yes, 0 for no): ";
-    int repairInput = readNumber();
-    pipes[count].isRepair = (repairInput == 1);
-    count++;
+        repair = readNumber();
+    while (repair != 0 && repair != 1)
+    {
+        cout << "Error. Enter 0 or 1: ";
+        repair = readNumber();
+    }
+    pipe.isRepair = repair;
 }
