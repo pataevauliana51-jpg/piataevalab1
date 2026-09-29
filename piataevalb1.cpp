@@ -69,3 +69,82 @@ void addPipe(Pipe& pipe)
     }
     pipe.isRepair = repair;
 }
+void showPipe(const Pipe& pipe)
+{
+    cout << "Pipe:\n";
+    cout << "Name: " << pipe.name << "\n";
+    cout << "Kilometer mark: " << pipe.kilometer_mark << "\n";
+    cout << "Length: " << pipe.length << " km\n";
+    cout << "Diameter: " << pipe.diameter << " mm\n";
+    cout << "Repair: " << (pipe.isRepair ? "Yes" : "No") << "\n";
+}
+void addStation(Compress_Station& station)
+{
+    cout << "Enter station name: ";
+    getline(cin >> ws, station.name);
+    while (station.name.empty()) {
+        cout << "Error. Name cannot be empty: ";
+        getline(cin >> ws, station.name);
+    }
+    cout << "Enter number of workshops: ";
+    station.workshops = readNumber();
+    while (station.workshops <= 0) {
+        cout << "Error. Must be greater than 0: ";
+        station.workshops = readNumber();
+    }
+    cout << "Enter number of working workshops: ";
+    station.active_workshops = readNumber();
+    while (station.active_workshops < 0 ||
+           station.active_workshops > station.workshops) {
+        cout << "Error. Enter from 0 to "
+             << station.workshops << ": ";
+        station.active_workshops = readNumber();
+    }
+    cout << "Enter station class (1 or 2): ";
+    station.class_number = readNumber();
+    while (station.class_number < 1 ||
+           station.class_number > 2) {
+        cout << "Error. Enter 1 or 2: ";
+        station.class_number = readNumber();
+    }
+}
+void showStation(const Compress_Station& station)
+{
+    cout << "Compressor station:\n";
+    cout << "Name: " << station.name << "\n";
+    cout << "Workshops: " << station.workshops << "\n";
+    cout << "Working workshops: " << station.active_workshops << "\n";
+    cout << "Class: " << station.class_number << "\n";
+}
+void startShop(Compress_Station& station)
+{
+    if (station.active_workshops < station.workshops) {
+        station.active_workshops++;
+        cout << "Workshop started.\n";
+    }
+    else {
+        cout << "All workshops are already working.\n";
+    }
+}
+void stopShop(Compress_Station& station)
+{
+    if (station.active_workshops > 0) {
+        station.active_workshops--;
+        cout << "Workshop stopped.\n";
+    }
+    else {
+        cout << "All workshops are already stopped.\n";
+    }
+}
+void showAll(const Pipe& pipe, const Station& station)
+{
+    if (pipe.name.empty())
+        cout << "Pipe is not created.\n";
+    else
+        showPipe(pipe);
+    cout << "\n";
+    if (station.name.empty())
+        cout << "Compressor station is not created.\n";
+    else
+        showStation(station);
+}
