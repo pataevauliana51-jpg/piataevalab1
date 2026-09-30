@@ -4,7 +4,6 @@
 using namespace std;
 struct Pipe
 {
-    int kilometer_mark;
     int length;
     int diameter;
     string name;
@@ -21,7 +20,7 @@ int readNumber()
 {
     int number;
     cin >> number;
-    while (cin.fail()|| cin.peek() != '\n')
+    while (cin.fail() || cin.peek() != '\n')
     {
         cin.clear();
         cin.ignore(1000, '\n');
@@ -34,16 +33,6 @@ void addPipe(Pipe& pipe)
 {
     cout << "Введите название трубы: ";
     getline(cin>>ws, pipe.name);
-    while (pipe.name.empty()) {
-        cout << "Ошибка. Название не может быть пустым: ";
-        getline(cin >> ws, pipe.name);
-    }
-    cout << "Введите отметку километра: ";
-    pipe.kilometer_mark= readNumber();
-    while (pipe.kilometer_mark <= 0) {
-        cout << "Ошибка. Отметка километра не может быть отрицательной: ";
-        pipe.kilometer_mark = readNumber();
-    }
     cout << "Введите длину: ";
     pipe.length = readNumber();
     while (pipe.length <= 0) {
@@ -70,7 +59,6 @@ void showPipe(const Pipe& pipe)
 {
     cout << "Труба:\n";
     cout << "Название: " << pipe.name << "\n";
-    cout << "Отметка километра: " << pipe.kilometer_mark << "\n";
     cout << "Длина: " << pipe.length << " km\n";
     cout << "Диаметр: " << pipe.diameter << " mm\n";
     cout << "Ремонт: " << (pipe.isRepair ? "Да" : "Нет") << "\n";
@@ -79,10 +67,6 @@ void addStation(Compress_Station& station)
 {
     cout << "Введите название компрессорной станции: ";
     getline(cin >> ws, station.name);
-    while (station.name.empty()) {
-        cout << "Ошибка. Название не может быть пустым: ";
-        getline(cin >> ws, station.name);
-    }
     cout << "Введите количество цехов: ";
     station.workshops = readNumber();
     while (station.workshops <= 0) {
@@ -187,14 +171,15 @@ void changeStation(Compress_Station& station)
 }
 void writePipe(ofstream& file, const Pipe& pipe)
 {
+    file << "Pipe\n";  
     file << pipe.name << "\n";
-    file << pipe.kilometer_mark << "\n";
     file << pipe.length << "\n";
     file << pipe.diameter << "\n";
     file << pipe.isRepair << "\n";
 }
 void writeStation(ofstream& file, const Compress_Station& station)
 {
+    file << "STATION\n";
     file << station.name << "\n";
     file << station.workshops << "\n";
     file << station.active_workshops << "\n";
@@ -203,7 +188,6 @@ void writeStation(ofstream& file, const Compress_Station& station)
 void readPipe(ifstream& file, Pipe& pipe)
 {
     getline(file >> ws, pipe.name);
-    file >> pipe.kilometer_mark;
     file >> pipe.length;
     file >> pipe.diameter;
     file >> pipe.isRepair;
@@ -225,8 +209,19 @@ void saveData(const Pipe& pipe, const Compress_Station& station)
         cout << "Ошибка открытия файла.\n";
         return;
     }
-    writePipe(file, pipe);
-    writeStation(file, station);
+    bool savedSomething = false;
+    if (!pipe.name.empty()) {
+        writePipe(file, pipe);
+        savedSomething = true;
+    }
+    if (!station.name.empty()) {
+        writeStation(file, station);
+        savedSomething = true;
+    }
+    if (!savedSomething) {
+        cout << "Нечего сохранять: объекты не созданы.\n";
+        return;
+    }
     cout << "Данные сохранены.\n";
 }
 void loadData(Pipe& pipe, Compress_Station& station)
@@ -243,28 +238,38 @@ void loadData(Pipe& pipe, Compress_Station& station)
         cout << "Файл пуст.\n";
         return;
     }
-    if (getline(file >> ws, pipe.name)) {
-        if (file >> pipe.kilometer_mark
-                >> pipe.length
-                >> pipe.diameter
-                >> pipe.isRepair) {
-            cout << "Труба загружена.\n";
+    pipe = {};
+    station = {};
+    string marker;
+    while (file >> marker) {
+        if (marker == "PIPE") {
+            Pipe temp;
+            getline(file >> ws, temp.name);
+            if (file >> temp.length >> temp.diameter >> temp.isRepair) {
+                pipe = temp;
+                cout << "Труба загружена.\n";
+            } else {
+                cout << "Ошибка чтения трубы.\n";
+                file.clear();
+                break;
+            }
+        }
+        else if (marker == "STATION") {
+            Compress_Station temp;
+            getline(file >> ws, temp.name);
+            if (file >> temp.workshops >> temp.active_workshops
+                     >> temp.class_number) {
+                station = temp;
+                cout << "Станция загружена.\n";
+            } else {
+                cout << "Ошибка чтения станции.\n";
+                file.clear();
+                break;
+            }
         }
         else {
-            pipe = {};
-            cout << "Труба не найдена в файле.\n";
-            file.clear();
-        }
-    }
-    if (getline(file >> ws, station.name)) {
-        if (file >> station.workshops
-                >> station.active_workshops
-                >> station.class_number) {
-            cout << "Станция загружена.\n";
-        }
-        else {
-            station = {};
-            cout << "Станция не найдена в файле.\n";
+            cout << "Неизвестный маркер: " << marker << "\n";
+            break;
         }
     }
 }
@@ -318,8 +323,5 @@ int main()
         case 0:
             return 0;
         }
-        cout << "\nНажмите Enter для продолжения...";
-        cin.ignore(1000, '\n');
-        cin.get();
     }
 }
