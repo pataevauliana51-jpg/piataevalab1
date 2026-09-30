@@ -29,10 +29,6 @@ int readNumber()
     }
     return number;
 }
-void changeRepair(Pipe& pipe, bool status)
-{
-    pipe.isRepair = status;
-}
 void addPipe(Pipe& pipe)
 {
     cout << "Enter pipe name: ";
@@ -136,7 +132,7 @@ void stopShop(Compress_Station& station)
         cout << "All workshops are already stopped.\n";
     }
 }
-void showAll(const Pipe& pipe, const Station& station)
+void showAll(const Pipe& pipe, const Compress_Station& station)
 {
     if (pipe.name.empty())
         cout << "Pipe is not created.\n";
@@ -147,4 +143,44 @@ void showAll(const Pipe& pipe, const Station& station)
         cout << "Compressor station is not created.\n";
     else
         showStation(station);
+}
+void changePipe(Pipe& pipe)
+{
+    if (pipe.name.empty()) {
+        cout << "Pipe is not created.\n";
+        return;
+    }
+    cout << "1. Set repair\n";
+    cout << "2. Set not repair\n";
+    cout << "0. Back\n";
+    cout << "Enter command: ";
+    int command = readNumber();
+    while (command < 0 || command > 2) {
+        cout << "Error. Enter 0, 1 or 2: ";
+        command = readNumber();
+    }
+    if (command == 1)
+         pipe.isRepair = true;
+    else if (command == 2)
+        pipe.isRepair = false;
+}
+void changeStation(Compress_Station& station)
+{
+    if (station.name.empty()) {
+        cout << "Station is not created.\n";
+        return;
+    }
+    cout << "1. Start workshop\n";
+    cout << "2. Stop workshop\n";
+    cout << "0. Back\n";
+    cout << "Enter command: ";
+    int command = readNumber();
+    while (command < 0 || command > 2) {
+        cout << "Error. Enter 0, 1 or 2: ";
+        command = readNumber();
+    }
+    if (command == 1)
+        startShop(station);
+    else if (command == 2)
+        stopShop(station);
 }
