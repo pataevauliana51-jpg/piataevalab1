@@ -25,139 +25,119 @@ int readNumber()
     {
         cin.clear();
         cin.ignore(1000, '\n');
-        cout << "Invalid input. Please enter a number: ";
+        cout << "Ошибка. Введите число:";
         cin >> number;
     }
     return number;
 }
 void addPipe(Pipe& pipe)
 {
-    cout << "Enter pipe name: ";
+    cout << "Введите название трубы: ";
     getline(cin>>ws, pipe.name);
     while (pipe.name.empty()) {
-        cout << "Error. Name cannot be empty: ";
+        cout << "Ошибка. Название не может быть пустым: ";
         getline(cin >> ws, pipe.name);
     }
-    cout << "Enter kilometr mark: ";
+    cout << "Введите отметку километра: ";
     pipe.kilometer_mark= readNumber();
     while (pipe.kilometer_mark <= 0) {
-        cout << "Error. Kilometer mark cannot be negative: ";
+        cout << "Ошибка. Отметка километра не может быть отрицательной: ";
         pipe.kilometer_mark = readNumber();
     }
-    cout << "Enter length: ";
+    cout << "Введите длину: ";
     pipe.length = readNumber();
     while (pipe.length <= 0) {
-        cout << "Error. Length must be positive: ";
+        cout << "Ошибка. Длина должна быть положительной: ";
         pipe.length = readNumber();
     }
-    cout << "Enter diameter: ";
+    cout << "Введите диаметр: ";
     pipe.diameter = readNumber();
     while (pipe.diameter <= 0) {
-        cout << "Error. Diameter must be positive: ";
+        cout << "Ошибка. Диаметр должен быть положительным: ";
         pipe.diameter = readNumber();
     }
     int repair;
-    cout << "Is the pipe under repair? (1 for yes, 0 for no): ";
+    cout << "Находится ли труба в ремонте? (1 для да, 0 для нет): ";
         repair = readNumber();
     while (repair != 0 && repair != 1)
     {
-        cout << "Error. Enter 0 or 1: ";
+        cout << "Ошибка. Введите 0 или 1: ";
         repair = readNumber();
     }
     pipe.isRepair = repair;
 }
 void showPipe(const Pipe& pipe)
 {
-    cout << "Pipe:\n";
-    cout << "Name: " << pipe.name << "\n";
-    cout << "Kilometer mark: " << pipe.kilometer_mark << "\n";
-    cout << "Length: " << pipe.length << " km\n";
-    cout << "Diameter: " << pipe.diameter << " mm\n";
-    cout << "Repair: " << (pipe.isRepair ? "Yes" : "No") << "\n";
+    cout << "Труба:\n";
+    cout << "Название: " << pipe.name << "\n";
+    cout << "Отметка километра: " << pipe.kilometer_mark << "\n";
+    cout << "Длина: " << pipe.length << " km\n";
+    cout << "Диаметр: " << pipe.diameter << " mm\n";
+    cout << "Ремонт: " << (pipe.isRepair ? "Да" : "Нет") << "\n";
 }
 void addStation(Compress_Station& station)
 {
-    cout << "Enter station name: ";
+    cout << "Введите название компрессорной станции: ";
     getline(cin >> ws, station.name);
     while (station.name.empty()) {
-        cout << "Error. Name cannot be empty: ";
+        cout << "Ошибка. Название не может быть пустым: ";
         getline(cin >> ws, station.name);
     }
-    cout << "Enter number of workshops: ";
+    cout << "Введите количество цехов: ";
     station.workshops = readNumber();
     while (station.workshops <= 0) {
-        cout << "Error. Must be greater than 0: ";
+        cout << "Ошибка. Должно быть больше 0: ";
         station.workshops = readNumber();
     }
-    cout << "Enter number of working workshops: ";
+    cout << "Введите количество работающих цехов: ";
     station.active_workshops = readNumber();
     while (station.active_workshops < 0 ||
            station.active_workshops > station.workshops) {
-        cout << "Error. Enter from 0 to "
+        cout << "Ошибка. Введите от 0 до "
              << station.workshops << ": ";
         station.active_workshops = readNumber();
     }
-    cout << "Enter station class (1 or 2): ";
+    cout << "Введите класс станции (1 или 2): ";
     station.class_number = readNumber();
     while (station.class_number < 1 ||
            station.class_number > 2) {
-        cout << "Error. Enter 1 or 2: ";
+        cout << "Ошибка. Введите 1 или 2: ";
         station.class_number = readNumber();
     }
 }
 void showStation(const Compress_Station& station)
 {
-    cout << "Compressor station:\n";
-    cout << "Name: " << station.name << "\n";
-    cout << "Workshops: " << station.workshops << "\n";
-    cout << "Working workshops: " << station.active_workshops << "\n";
-    cout << "Class: " << station.class_number << "\n";
-}
-void startShop(Compress_Station& station)
-{
-    if (station.active_workshops < station.workshops) {
-        station.active_workshops++;
-        cout << "Workshop started.\n";
-    }
-    else {
-        cout << "All workshops are already working.\n";
-    }
-}
-void stopShop(Compress_Station& station)
-{
-    if (station.active_workshops > 0) {
-        station.active_workshops--;
-        cout << "Workshop stopped.\n";
-    }
-    else {
-        cout << "All workshops are already stopped.\n";
-    }
+    cout << "Компрессорная станция:\n";
+    cout << "Название: " << station.name << "\n";
+    cout << "Цеха: " << station.workshops << "\n";
+    cout << "Работающие цеха: " << station.active_workshops << "\n";
+    cout << "Класс: " << station.class_number << "\n";
 }
 void showAll(const Pipe& pipe, const Compress_Station& station)
 {
     if (pipe.name.empty())
-        cout << "Pipe is not created.\n";
+        cout << "Труба не создана.\n";
     else
         showPipe(pipe);
     cout << "\n";
     if (station.name.empty())
-        cout << "Compressor station is not created.\n";
+        cout << "Компрессорная станция не создана.\n";
     else
         showStation(station);
 }
 void changePipe(Pipe& pipe)
 {
     if (pipe.name.empty()) {
-        cout << "Pipe is not created.\n";
+        cout << "Труба не создана.\n";
         return;
     }
-    cout << "1. Set repair\n";
-    cout << "2. Set not repair\n";
-    cout << "0. Back\n";
-    cout << "Enter command: ";
+    cout << "1. Переместить в ремонт\n";
+    cout << "2. Снять с ремонта\n";
+    cout << "0. Назад\n";
+    cout << "Введите команду: ";
     int command = readNumber();
     while (command < 0 || command > 2) {
-        cout << "Error. Enter 0, 1 or 2: ";
+        cout << "Ошибка. Введите 0, 1 или 2: ";
         command = readNumber();
     }
     if (command == 1)
@@ -165,19 +145,39 @@ void changePipe(Pipe& pipe)
     else if (command == 2)
         pipe.isRepair = false;
 }
+void startShop(Compress_Station& station)
+{
+    if (station.active_workshops < station.workshops) {
+        station.active_workshops++;
+        cout << "Цех запущен.\n";
+    }
+    else {
+        cout << "Все цеха уже запущены.\n";
+    }
+}
+void stopShop(Compress_Station& station)
+{
+    if (station.active_workshops > 0) {
+        station.active_workshops--;
+        cout << "Цех остановлен.\n";
+    }
+    else {
+        cout << "Нет работающих цехов.\n";
+    }
+}
 void changeStation(Compress_Station& station)
 {
     if (station.name.empty()) {
-        cout << "Station is not created.\n";
+        cout << "Компрессорная станция не создана.\n";
         return;
     }
-    cout << "1. Start workshop\n";
-    cout << "2. Stop workshop\n";
-    cout << "0. Back\n";
-    cout << "Enter command: ";
+    cout << "1. Запустить цех\n";
+    cout << "2. Остановить цех\n";
+    cout << "0. Назад\n";
+    cout << "Введите команду: ";
     int command = readNumber();
     while (command < 0 || command > 2) {
-        cout << "Error. Enter 0, 1 or 2: ";
+        cout << "Ошибка. Введите 0, 1 или 2: ";
         command = readNumber();
     }
     if (command == 1)
@@ -218,29 +218,29 @@ void readStation(ifstream& file, Compress_Station& station)
 void saveData(const Pipe& pipe, const Compress_Station& station)
 {
     string fileName;
-    cout << "Enter file name: ";
+    cout << "Введите имя файла: ";
     getline(cin >> ws, fileName);
     ofstream file(fileName);
     if (!file) {
-        cout << "Error opening file.\n";
+        cout << "Ошибка открытия файла.\n";
         return;
     }
     writePipe(file, pipe);
     writeStation(file, station);
-    cout << "Data saved.\n";
+    cout << "Данные сохранены.\n";
 }
 void loadData(Pipe& pipe, Compress_Station& station)
 {
     string fileName;
-    cout << "Enter file name: ";
+    cout << "Введите имя файла: ";
     getline(cin >> ws, fileName);
     ifstream file(fileName);
     if (!file) {
-        cout << "Error opening file.\n";
+        cout << "Ошибка открытия файла.\n";
         return;
     }
     if (file.peek() == EOF) {
-        cout << "File is empty.\n";
+        cout << "Файл пуст.\n";
         return;
     }
     if (getline(file >> ws, pipe.name)) {
@@ -248,11 +248,11 @@ void loadData(Pipe& pipe, Compress_Station& station)
                 >> pipe.length
                 >> pipe.diameter
                 >> pipe.isRepair) {
-            cout << "Pipe loaded.\n";
+            cout << "Труба загружена.\n";
         }
         else {
             pipe = {};
-            cout << "Pipe is not in file.\n";
+            cout << "Труба не найдена в файле.\n";
             file.clear();
         }
     }
@@ -260,22 +260,66 @@ void loadData(Pipe& pipe, Compress_Station& station)
         if (file >> station.workshops
                 >> station.active_workshops
                 >> station.class_number) {
-            cout << "Station loaded.\n";
+            cout << "Станция загружена.\n";
         }
         else {
             station = {};
-            cout << "Station is not in file.\n";
+            cout << "Станция не найдена в файле.\n";
         }
     }
 }
 void menu()
 {
-    cout << "1. Add pipe\n"
-         << "2. Add compressor station\n"
-         << "3. Show all objects\n"
-         << "4. Edit pipe\n"
-         << "5. Edit compressor station\n"
-         << "6. Save\n"
-         << "7. Load\n"
-         << "0. Exit\n";
+    cout << "1. Добавить трубу\n"
+         << "2. Добавить компрессорную станцию\n"
+         << "3. Показать все объекты\n"
+         << "4. Редактировать трубу\n"
+         << "5. Редактировать компрессорную станцию\n"
+         << "6. Сохранить\n"
+         << "7. Загрузить\n"
+         << "0. Выход\n";
+}
+int main()
+{
+    Pipe pipe{};
+    Compress_Station station{};
+    while (true) {
+        menu();
+        cout << "\nВведите команду: ";
+        int command = readNumber();
+        while (command < 0 || command > 7) {
+            cout << "Ошибка. Введите 0 to 7: ";
+            command = readNumber();
+        }
+
+        switch (command) {
+        case 1:
+            addPipe(pipe);
+            break;
+        case 2:
+            addStation(station);
+            break;
+        case 3:
+            showAll(pipe, station);
+            break;
+        case 4:
+            changePipe(pipe);
+            break;
+        case 5:
+            changeStation(station);
+            break;
+        case 6:
+            saveData(pipe, station);
+            break;
+        case 7:
+            loadData(pipe, station);
+            break;
+
+        case 0:
+            return 0;
+        }
+        cout << "\nНажмите Enter для продолжения...";
+        cin.ignore(1000, '\n');
+        cin.get();
+    }
 }
