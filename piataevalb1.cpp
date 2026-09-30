@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 struct Pipe
 {
@@ -183,4 +184,34 @@ void changeStation(Compress_Station& station)
         startShop(station);
     else if (command == 2)
         stopShop(station);
+}
+void writePipe(ofstream& file, const Pipe& pipe)
+{
+    file << pipe.name << "\n";
+    file << pipe.kilometer_mark << "\n";
+    file << pipe.length << "\n";
+    file << pipe.diameter << "\n";
+    file << pipe.isRepair << "\n";
+}
+void writeStation(ofstream& file, const Compress_Station& station)
+{
+    file << station.name << "\n";
+    file << station.workshops << "\n";
+    file << station.active_workshops << "\n";
+    file << station.class_number << "\n";
+}
+void readPipe(ifstream& file, Pipe& pipe)
+{
+    getline(file >> ws, pipe.name);
+    file >> pipe.kilometer_mark;
+    file >> pipe.length;
+    file >> pipe.diameter;
+    file >> pipe.isRepair;
+}
+void readStation(ifstream& file, Compress_Station& station)
+{
+    getline(file >> ws, station.name);
+    file >> station.workshops;
+    file >> station.active_workshops;
+    file >> station.class_number;
 }
