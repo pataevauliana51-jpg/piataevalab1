@@ -21,7 +21,7 @@ int readNumber()
 {
     int number;
     cin >> number;
-    while (cin.fail())
+    while (cin.fail()|| cin.peek() != '\n')
     {
         cin.clear();
         cin.ignore(1000, '\n');
