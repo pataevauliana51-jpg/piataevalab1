@@ -279,3 +279,31 @@ void menu()
          << "7. Load\n"
          << "0. Exit\n";
 }
+int main()
+{
+    Pipe pipe{};
+    Compress_Station station{};
+
+    while (true) {
+        menu();
+        cout << "\nEnter command: ";
+
+        int command = readNumber();
+
+        switch (command) {
+        case 1: addPipe(pipe); break;
+        case 2: addStation(station); break;
+        case 3: showAll(pipe, station); break;
+        case 4: changePipe(pipe); break;
+        case 5: changeStation(station); break;
+        case 6: saveData(pipe, station); break;
+        case 7: loadData(pipe, station); break;
+        case 0: return 0;
+        default: cout << "Error. Enter 0 to 7.\n";
+        }
+
+        cout << "\nPress Enter to continue...";
+        cin.ignore(1000, '\n');
+        cin.get();
+    }
+}
