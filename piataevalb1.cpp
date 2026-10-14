@@ -179,7 +179,7 @@ void writePipe(ofstream& file, const Pipe& pipe)
 }
 void writeStation(ofstream& file, const Compress_Station& station)
 {
-    file << "STATION\n";
+    file << "Station\n";
     file << station.name << "\n";
     file << station.workshops << "\n";
     file << station.active_workshops << "\n";
@@ -242,7 +242,7 @@ void loadData(Pipe& pipe, Compress_Station& station)
     station = {};
     string marker;
     while (file >> marker) {
-        if (marker == "PIPE") {
+        if (marker == "Pipe") {
             Pipe temp;
             getline(file >> ws, temp.name);
             if (file >> temp.length >> temp.diameter >> temp.isRepair) {
@@ -254,7 +254,7 @@ void loadData(Pipe& pipe, Compress_Station& station)
                 break;
             }
         }
-        else if (marker == "STATION") {
+        else if (marker == "Station") {
             Compress_Station temp;
             getline(file >> ws, temp.name);
             if (file >> temp.workshops >> temp.active_workshops
