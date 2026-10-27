@@ -1,5 +1,5 @@
 #include "Station.h"
-#include "Pipe.h"
+#include "Template.h"
 Station::Station()
 {
     id = generateID();
@@ -34,23 +34,41 @@ void Station::SetClassNumber(int value)
 {
     classNumber = value;
 }
+
 void inputStation(Station& station)
 {
     string name;
     int workshops, active, classNumber;
-    cout << "Название станции: ";
-    cin >> name;
-    cout << "Количество цехов: ";
-    cin >> workshops;
-    cout << "Количество работающих цехов: ";
-    cin >> active;
-    cout << "Класс станции: ";
-    cin >> classNumber;
+    cout << "Введите название станции: ";
+    getline(cin >> ws, name);
+    cout << "Введите количество цехов: ";
+    workshops = readNumber();
+    while (workshops <= 0)
+    {
+        cout << "Ошибка. Должно быть больше 0: ";
+        workshops = readNumber();
+    }
+    cout << "Введите количество работающих цехов: ";
+    active = readNumber();
+    while (active < 0 || active > workshops)
+    {
+        cout << "Ошибка. Введите от 0 до "
+             << workshops << ": ";
+        active = readNumber();
+    }
+    cout << "Введите класс станции (1 или 2): ";
+    classNumber = readNumber();
+    while (classNumber < 1 || classNumber > 2)
+    {
+        cout << "Ошибка. Введите 1 или 2: ";
+        classNumber = readNumber();
+    }
     station.SetName(name);
     station.SetWorkshops(workshops);
     station.SetActiveWorkshops(active);
     station.SetClassNumber(classNumber);
 }
+
 void printStation(const Station& station)
 {
     cout << "ID: " << station.GetID() << '\n';
