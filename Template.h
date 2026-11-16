@@ -2,19 +2,20 @@
 #define TEMPLATE_H
 #include <iostream>
 using namespace std;
-inline int readNumber()
+template <typename T>
+T GetCorrectNumber(T min, T max)
 {
-    int number;
-    cin >> number;
-    while (cin.fail() || cin.peek() != '\n')
+    T x;
+    while ((cin >> x).fail() || cin.peek() != '\n'
+           || x < min || x > max)
     {
         cin.clear();
-        cin.ignore(1000, '\n');
-        cout << "Ошибка. Введите число: ";
-        cin >> number;
+        cin.ignore(10000, '\n');
+        cout << "Введите число от " << min << " до " << max << ": ";
     }
-    return number;
+    return x;
 }
+
 inline int& currentID()
 {
     static int id = 1;

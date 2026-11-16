@@ -39,30 +39,19 @@ void inputStation(Station& station)
 {
     string name;
     int workshops, active, classNumber;
+
     cout << "Введите название станции: ";
     getline(cin >> ws, name);
+
     cout << "Введите количество цехов: ";
-    workshops = readNumber();
-    while (workshops <= 0)
-    {
-        cout << "Ошибка. Должно быть больше 0: ";
-        workshops = readNumber();
-    }
+    workshops = GetCorrectNumber(1, 1000000);
+
     cout << "Введите количество работающих цехов: ";
-    active = readNumber();
-    while (active < 0 || active > workshops)
-    {
-        cout << "Ошибка. Введите от 0 до "
-             << workshops << ": ";
-        active = readNumber();
-    }
+    active = GetCorrectNumber(0, workshops);
+
     cout << "Введите класс станции (1 или 2): ";
-    classNumber = readNumber();
-    while (classNumber < 1 || classNumber > 2)
-    {
-        cout << "Ошибка. Введите 1 или 2: ";
-        classNumber = readNumber();
-    }
+    classNumber = GetCorrectNumber(1, 2);
+
     station.SetName(name);
     station.SetWorkshops(workshops);
     station.SetActiveWorkshops(active);

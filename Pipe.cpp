@@ -35,33 +35,24 @@ void Pipe::SetRepair(bool repair)
 {
     isRepair = repair;
 }
+
 void inputPipe(Pipe& pipe)
 {
     string name;
     int length, diameter, repair;
+
     cout << "Введите название трубы: ";
     getline(cin >> ws, name);
+
     cout << "Введите длину: ";
-    length = readNumber();
-    while (length <= 0)
-    {
-        cout << "Ошибка. Длина должна быть положительной: ";
-        length = readNumber();
-    }
+    length = GetCorrectNumber(1, 1000000);
+
     cout << "Введите диаметр: ";
-    diameter = readNumber();
-    while (diameter <= 0)
-    {
-        cout << "Ошибка. Диаметр должен быть положительным: ";
-        diameter = readNumber();
-    }
+    diameter = GetCorrectNumber(1, 1000000);
+
     cout << "Находится ли труба в ремонте? (1 - да, 0 - нет): ";
-    repair = readNumber();
-    while (repair != 0 && repair != 1)
-    {
-        cout << "Ошибка. Введите 0 или 1: ";
-        repair = readNumber();
-    }
+    repair = GetCorrectNumber(0, 1);
+
     pipe.SetName(name);
     pipe.SetLength(length);
     pipe.SetDiameter(diameter);
