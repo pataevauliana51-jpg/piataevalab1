@@ -1,29 +1,29 @@
+
 #ifndef STATION_H
 #define STATION_H
 #include <iostream>
 #include <string>
-using namespace std;
+#include <vector>
 class Station
 {
 private:
     int id;
-    string name;
+    std::string name;
     int workshops;
     int activeWorkshops;
     int classNumber;
 public:
     Station();
-    int GetID() const;
-    string GetName() const;
-    int GetWorkshops() const;
-    int GetActiveWorkshops() const;
-    int GetClassNumber() const;
-    void SetID(int newID);
-    void SetName(const string& newName);
-    void SetWorkshops(int value);
-    void SetActiveWorkshops(int value);
-    void SetClassNumber(int value);
+    bool matchesName(const std::string& text) const;
+    bool matchesUnused(int percent) const;
+    bool hasID(int value) const;
+    void edit();
+    friend std::istream& operator>>(std::istream& in, Station& station);
+    friend std::ostream& operator<<(std::ostream& out, const Station& station);
 };
-void inputStation(Station& station);
-void printStation(const Station& station);
+void addStation(std::vector<Station>& stations);
+void showStations(const std::vector<Station>& stations);
+void editStation(std::vector<Station>& stations);
+void deleteStation(std::vector<Station>& stations);
+void searchStations(const std::vector<Station>& stations);
 #endif
