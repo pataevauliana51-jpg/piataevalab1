@@ -1,4 +1,3 @@
-
 #include "Station.h"
 #include "Template.h"
 using namespace std;
@@ -26,14 +25,15 @@ istream& operator>>(istream& in, Station& station)
     else
     {
         if (!(in >> station.id))
-        {
             return in;
-        }
         getline(in >> ws, station.name);
         in >> station.workshops >> station.activeWorkshops >> station.classNumber;
         if (in)
         {
-            if (station.id < 1 || station.name.empty() || station.workshops < 1 || station.activeWorkshops < 0 || station.activeWorkshops > station.workshops || (station.classNumber != 1 && station.classNumber != 2))
+            if (station.id < 1 || station.name.empty() ||
+                station.workshops < 1 || station.activeWorkshops < 0 ||
+                station.activeWorkshops > station.workshops ||
+                (station.classNumber != 1 && station.classNumber != 2))
             {
                 in.setstate(ios::failbit);
             }
@@ -82,7 +82,8 @@ bool Station::matchesName(const string& text) const
 }
 bool Station::matchesUnused(int percent) const
 {
-    return (workshops - activeWorkshops) * 100LL >= (long long)percent * workshops;
+    return (workshops - activeWorkshops) * 100LL >=
+           (long long)percent * workshops;
 }
 bool Station::hasID(int value) const
 {
@@ -93,17 +94,17 @@ void addStation(vector<Station>& stations)
     Station station;
     cin >> station;
     stations.push_back(station);
+    logAction("Добавлена станция");
 }
 void showStations(const vector<Station>& stations)
 {
     if (stations.empty())
     {
         cout << "Станций нет" << endl;
+        return;
     }
     for (const Station& station : stations)
-    {
         cout << station;
-    }
 }
 void editStation(vector<Station>& stations)
 {
@@ -114,6 +115,7 @@ void editStation(vector<Station>& stations)
         if (station.hasID(id))
         {
             station.edit();
+            logAction("Отредактирована станция");
             return;
         }
     }
@@ -128,7 +130,7 @@ void deleteStation(vector<Station>& stations)
         if (it->hasID(id))
         {
             stations.erase(it);
-            cout << "Станция удалена" << endl;
+            logAction("Удалена станция");
             return;
         }
     }
@@ -142,10 +144,11 @@ bool stationUnusedFilter(const Station& station, int percent)
 {
     return station.matchesUnused(percent);
 }
-void searchStations(const vector<Station>& stations)
+void searchStations(vector<Station>& stations)
 {
-    cout << "1. Поиск по названию" << endl;
-    cout << "2. Поиск по проценту неработающих цехов" << endl;
+    cout << "\nПоиск станций:\n";
+    cout << "1. Поиск по названию\n";
+    cout << "2. Поиск по проценту неработающих цехов\n";
     cout << "Выберите пункт: ";
     int choice = GetCorrectNumber(1, 2);
     vector<int> found;
@@ -164,13 +167,10 @@ void searchStations(const vector<Station>& stations)
     }
     if (found.empty())
     {
-        cout << "Ничего не найдено" << endl;
+        cout << "Ничего не найдено\n";
+        return;
     }
-    else
-    {
-        for (int i : found)
-        {
-            cout << stations[i];
-        }
-    }
+    cout << "\nНайдено станций: " << found.size() << "\n";
+    for (int index : found)
+        cout << stations[index] << endl;
 }

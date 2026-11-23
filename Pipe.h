@@ -20,14 +20,15 @@ public:
     void edit();
     friend std::istream& operator>>(std::istream& in, Pipe& pipe);
     friend std::ostream& operator<<(std::ostream& out, const Pipe& pipe);
-    friend void saveData(const std::vector<Pipe>& pipes, const std::vector<Station>& stations);
-    friend void loadData(std::vector<Pipe>& pipes, std::vector<Station>& stations);
+    void setRepair(bool repair);
+    void setDiameter(int value);
+    void setLength(int value);
 };
 void addPipe(std::vector<Pipe>& pipes);
 void showPipes(const std::vector<Pipe>& pipes);
 void editPipe(std::vector<Pipe>& pipes);
 void deletePipe(std::vector<Pipe>& pipes);
-void searchPipes(const std::vector<Pipe>& pipes);
 void saveData(const std::vector<Pipe>& pipes, const std::vector<Station>& stations);
 void loadData(std::vector<Pipe>& pipes, std::vector<Station>& stations);
+void searchPipes(std::vector<Pipe>& pipes);
 #endif

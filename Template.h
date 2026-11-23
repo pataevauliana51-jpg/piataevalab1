@@ -1,29 +1,11 @@
+
 #pragma once
 #include <iostream>
 #include <vector>
 #include <limits>
 #include <string>
-#define INPUT_LINE(in, str) getline(in >> std::ws, str); \
-    std::cerr << str << std::endl
-#define PRINT_PARAM(out, x) out << #x << "=" << x << std::endl
-class redirect_output_wrapper
-{
-    std::ostream& stream;
-    std::streambuf* const old_buf;
-public:
-    redirect_output_wrapper(std::ostream& src)
-        : stream(src), old_buf(src.rdbuf())
-    {
-    }
-    ~redirect_output_wrapper()
-    {
-        stream.rdbuf(old_buf);
-    }
-    void redirect(std::ostream& dest)
-    {
-        stream.rdbuf(dest.rdbuf());
-    }
-};
+#include <fstream>
+#include <algorithm>
 template <typename T>
 T GetCorrectNumber(T min, T max)
 {
@@ -48,9 +30,7 @@ inline int generateID()
 inline void registerID(int id)
 {
     if (id >= currentID())
-    {
         currentID() = id + 1;
-    }
 }
 template <typename T, typename P>
 using Filter = bool(*)(const T&, P);
@@ -61,9 +41,48 @@ std::vector<int> FindByFilter(const std::vector<T>& objects, Filter<T, P> filter
     for (int i = 0; i < (int)objects.size(); i++)
     {
         if (filter(objects[i], param))
-        {
             result.push_back(i);
-        }
     }
     return result;
+}
+inline void logAction(const std::string& action)
+{
+    std::ofstream log("actions.log", std::ios::app);
+    if (log)
+        log << action << std::endl;
+}
+template <typename T>
+std::vector<int> selectObjects(const std::vector<T>& objects, const std::vector<int>& found)
+{
+    std::cout << "\n1. Все найденные\n";
+    std::cout << "2. Выбрать по ID\n";
+    int choice = GetCorrectNumber(1, 2);
+    if (choice == 1)
+        return found;
+    std::vector<int> selected;
+    std::cout << "Введите ID объектов (0 - закончить):\n";
+    while (true)
+    {
+        int id = GetCorrectNumber(0, 1000000);
+        if (id == 0)
+            break;
+        for (int index : found)
+        {
+            if (objects[index].hasID(id))
+            {
+                bool exists = false;
+                for (int i : selected)
+                    if (i == index)
+                        exists = true;
+                if (!exists)
+                {
+                    selected.push_back(index);
+                    std::cout << "Объект выбран\n";
+                }
+                break;
+            }
+        }
+    }
+    std::sort(selected.begin(), selected.end());
+    return selected;
 }

@@ -1,4 +1,3 @@
-
 #ifndef STATION_H
 #define STATION_H
 #include <iostream>
@@ -25,5 +24,5 @@ void addStation(std::vector<Station>& stations);
 void showStations(const std::vector<Station>& stations);
 void editStation(std::vector<Station>& stations);
 void deleteStation(std::vector<Station>& stations);
-void searchStations(const std::vector<Station>& stations);
+void searchStations(std::vector<Station>& stations);
 #endif

@@ -1,8 +1,8 @@
-
 #include "Pipe.h"
 #include "Station.h"
 #include "Template.h"
 #include <fstream>
+#include <algorithm>
 using namespace std;
 Pipe::Pipe()
 {
@@ -29,14 +29,14 @@ istream& operator>>(istream& in, Pipe& pipe)
     {
         int repair;
         if (!(in >> pipe.id))
-        {
             return in;
-        }
         getline(in >> ws, pipe.name);
         in >> pipe.length >> pipe.diameter >> repair;
         if (in)
         {
-            if (pipe.id < 1 || pipe.name.empty() || pipe.length < 1 || pipe.diameter < 1 || (repair != 0 && repair != 1))
+            if (pipe.id < 1 || pipe.name.empty() ||
+                pipe.length < 1 || pipe.diameter < 1 ||
+                (repair != 0 && repair != 1))
             {
                 in.setstate(ios::failbit);
             }
@@ -92,22 +92,26 @@ bool Pipe::hasID(int value) const
 {
     return id == value;
 }
+void Pipe::setRepair(bool repair)
+{
+    isRepair = repair;
+}
 void addPipe(vector<Pipe>& pipes)
 {
     Pipe pipe;
     cin >> pipe;
     pipes.push_back(pipe);
+    logAction("Добавлена труба");
 }
 void showPipes(const vector<Pipe>& pipes)
 {
     if (pipes.empty())
     {
         cout << "Труб нет" << endl;
+        return;
     }
     for (const Pipe& pipe : pipes)
-    {
         cout << pipe;
-    }
 }
 void editPipe(vector<Pipe>& pipes)
 {
@@ -118,6 +122,7 @@ void editPipe(vector<Pipe>& pipes)
         if (pipe.hasID(id))
         {
             pipe.edit();
+            logAction("Отредактирована труба");
             return;
         }
     }
@@ -132,7 +137,7 @@ void deletePipe(vector<Pipe>& pipes)
         if (it->hasID(id))
         {
             pipes.erase(it);
-            cout << "Труба удалена" << endl;
+            logAction("Удалена труба");
             return;
         }
     }
@@ -146,10 +151,29 @@ bool pipeRepairFilter(const Pipe& pipe, bool repair)
 {
     return pipe.matchesRepair(repair);
 }
-void searchPipes(const vector<Pipe>& pipes)
+void batchPipes(vector<Pipe>& pipes, const vector<int>& selected, int action)
 {
-    cout << "1. Поиск по названию" << endl;
-    cout << "2. Поиск по ремонту" << endl;
+    if (action == 1)
+    {
+        cout << "Новое состояние ремонта (1 - да, 0 - нет): ";
+        bool repair = GetCorrectNumber(0, 1) == 1;
+        for (int index : selected)
+            pipes[index].setRepair(repair);
+        cout << "Изменено труб: " << selected.size() << "\n";
+    }
+    else
+    {
+        for (int i = (int)selected.size() - 1; i >= 0; i--)
+            pipes.erase(pipes.begin() + selected[i]);
+        cout << "Удалено труб: " << selected.size() << "\n";
+    }
+    logAction("Пакетная операция с трубами");
+}
+void searchPipes(vector<Pipe>& pipes)
+{
+    cout << "\nПоиск труб:\n";
+    cout << "1. Поиск по названию\n";
+    cout << "2. Поиск по ремонту\n";
     cout << "Выберите пункт: ";
     int choice = GetCorrectNumber(1, 2);
     vector<int> found;
@@ -168,15 +192,27 @@ void searchPipes(const vector<Pipe>& pipes)
     }
     if (found.empty())
     {
-        cout << "Ничего не найдено" << endl;
+        cout << "Ничего не найдено\n";
+        return;
     }
-    else
+    cout << "\nНайдено труб: " << found.size() << "\n";
+    for (int index : found)
+        cout << pipes[index] << endl;
+    cout << "\nЧто сделать с найденными трубами?\n";
+    cout << "1. Редактировать\n";
+    cout << "2. Удалить\n";
+    cout << "0. Назад\n";
+    cout << "Выберите действие: ";
+    int action = GetCorrectNumber(0, 2);
+    if (action == 0)
+        return;
+    vector<int> selected = selectObjects(pipes, found);
+    if (selected.empty())
     {
-        for (int i : found)
-        {
-            cout << pipes[i];
-        }
+        cout << "Объекты не выбраны\n";
+        return;
     }
+    batchPipes(pipes, selected, action);
 }
 void saveData(const vector<Pipe>& pipes, const vector<Station>& stations)
 {
@@ -199,12 +235,14 @@ void saveData(const vector<Pipe>& pipes, const vector<Station>& stations)
         out << "Station" << endl;
         out << station;
     }
+    out.flush();
     if (!out)
     {
         cout << "Ошибка записи файла" << endl;
         return;
     }
     cout << "Данные сохранены" << endl;
+    logAction("Данные сохранены в файл");
 }
 void loadData(vector<Pipe>& pipes, vector<Station>& stations)
 {
@@ -253,15 +291,8 @@ void loadData(vector<Pipe>& pipes, vector<Station>& stations)
         cout << "Ошибка чтения файла" << endl;
         return;
     }
-    for (const Pipe& pipe : loadedPipes)
-    {
-        for (const Pipe& previous : pipes)
-        {
-            (void)previous;
-        }
-        (void)pipe;
-    }
     pipes = loadedPipes;
     stations = loadedStations;
     cout << "Данные загружены" << endl;
+    logAction("Данные загружены из файла");
 }
