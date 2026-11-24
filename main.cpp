@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
 #include "Pipe.h"
 #include "Station.h"
 #include "Template.h"
@@ -24,6 +25,12 @@ void printMenu()
 }
 int main()
 {
+    ofstream logfile("actions.log", ios::app);
+    redirect_output_wrapper cerr_out(cerr);
+    if (logfile)
+        cerr_out.redirect(logfile);
+    else
+        cerr << "Не удалось открыть файл логирования\n";
     vector<Pipe> pipes;
     vector<Station> stations;
     int command;

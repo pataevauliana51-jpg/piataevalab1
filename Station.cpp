@@ -14,7 +14,7 @@ istream& operator>>(istream& in, Station& station)
     if (&in == &cin)
     {
         cout << "Введите название станции: ";
-        getline(in >> ws, station.name);
+        INPUT_LINE(in, station.name);
         cout << "Введите количество цехов: ";
         station.workshops = GetCorrectNumber(1, 1000000);
         cout << "Введите количество работающих цехов: ";
@@ -24,23 +24,21 @@ istream& operator>>(istream& in, Station& station)
     }
     else
     {
-        if (!(in >> station.id))
-            return in;
+        in >> station.id;
         getline(in >> ws, station.name);
         in >> station.workshops >> station.activeWorkshops >> station.classNumber;
-        if (in)
+        if (!in)
+            return in;
+        if (station.id >= 1 && !station.name.empty() &&
+            station.workshops >= 1 && station.activeWorkshops >= 0 &&
+            station.activeWorkshops <= station.workshops &&
+            (station.classNumber == 1 || station.classNumber == 2))
         {
-            if (station.id < 1 || station.name.empty() ||
-                station.workshops < 1 || station.activeWorkshops < 0 ||
-                station.activeWorkshops > station.workshops ||
-                (station.classNumber != 1 && station.classNumber != 2))
-            {
-                in.setstate(ios::failbit);
-            }
-            else
-            {
-                registerID(station.id);
-            }
+            registerID(station.id);
+        }
+        else
+        {
+            in.setstate(ios::failbit);
         }
     }
     return in;
@@ -67,14 +65,7 @@ ostream& operator<<(ostream& out, const Station& station)
 }
 void Station::edit()
 {
-    cout << "Введите новое название: ";
-    getline(cin >> ws, name);
-    cout << "Введите количество цехов: ";
-    workshops = GetCorrectNumber(1, 1000000);
-    cout << "Введите количество работающих цехов: ";
-    activeWorkshops = GetCorrectNumber(0, workshops);
-    cout << "Введите класс станции (1 или 2): ";
-    classNumber = GetCorrectNumber(1, 2);
+    cin >> *this;
 }
 bool Station::matchesName(const string& text) const
 {
@@ -125,11 +116,11 @@ void deleteStation(vector<Station>& stations)
 {
     cout << "Введите ID станции: ";
     int id = GetCorrectNumber(1, 1000000000);
-    for (auto it = stations.begin(); it != stations.end(); ++it)
+    for (int i = 0; i < (int)stations.size(); i++)
     {
-        if (it->hasID(id))
+        if (stations[i].hasID(id))
         {
-            stations.erase(it);
+            stations.erase(stations.begin() + i);
             logAction("Удалена станция");
             return;
         }
@@ -156,7 +147,7 @@ void searchStations(vector<Station>& stations)
     {
         cout << "Введите название: ";
         string name;
-        getline(cin >> ws, name);
+        INPUT_LINE(cin, name);
         found = FindByFilter(stations, stationNameFilter, name);
     }
     else

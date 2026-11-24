@@ -2,7 +2,6 @@
 #include "Station.h"
 #include "Template.h"
 #include <fstream>
-#include <algorithm>
 using namespace std;
 Pipe::Pipe()
 {
@@ -17,34 +16,29 @@ istream& operator>>(istream& in, Pipe& pipe)
     if (&in == &cin)
     {
         cout << "Введите название трубы: ";
-        getline(in >> ws, pipe.name);
+        INPUT_LINE(in, pipe.name);
         cout << "Введите длину трубы: ";
         pipe.length = GetCorrectNumber(1, 1000000);
         cout << "Введите диаметр трубы: ";
         pipe.diameter = GetCorrectNumber(1, 1000000);
         cout << "Труба в ремонте? (1 - да, 0 - нет): ";
-        pipe.isRepair = GetCorrectNumber(0, 1) == 1;
+        pipe.isRepair = GetCorrectNumber(0, 1);
     }
     else
     {
-        int repair;
-        if (!(in >> pipe.id))
-            return in;
+        in >> pipe.id;
         getline(in >> ws, pipe.name);
-        in >> pipe.length >> pipe.diameter >> repair;
-        if (in)
+        in >> pipe.length >> pipe.diameter >> pipe.isRepair;
+        if (!in)
+            return in;
+        if (pipe.id >= 1 && !pipe.name.empty() &&
+            pipe.length >= 1 && pipe.diameter >= 1)
         {
-            if (pipe.id < 1 || pipe.name.empty() ||
-                pipe.length < 1 || pipe.diameter < 1 ||
-                (repair != 0 && repair != 1))
-            {
-                in.setstate(ios::failbit);
-            }
-            else
-            {
-                pipe.isRepair = repair == 1;
-                registerID(pipe.id);
-            }
+            registerID(pipe.id);
+        }
+        else
+        {
+            in.setstate(ios::failbit);
         }
     }
     return in;
@@ -71,14 +65,7 @@ ostream& operator<<(ostream& out, const Pipe& pipe)
 }
 void Pipe::edit()
 {
-    cout << "Введите новое название: ";
-    getline(cin >> ws, name);
-    cout << "Введите новую длину: ";
-    length = GetCorrectNumber(1, 1000000);
-    cout << "Введите новый диаметр: ";
-    diameter = GetCorrectNumber(1, 1000000);
-    cout << "Труба в ремонте? (1 - да, 0 - нет): ";
-    isRepair = GetCorrectNumber(0, 1) == 1;
+    cin >> *this;
 }
 bool Pipe::matchesName(const string& text) const
 {
@@ -132,11 +119,11 @@ void deletePipe(vector<Pipe>& pipes)
 {
     cout << "Введите ID трубы: ";
     int id = GetCorrectNumber(1, 1000000000);
-    for (auto it = pipes.begin(); it != pipes.end(); ++it)
+    for (int i = 0; i < (int)pipes.size(); i++)
     {
-        if (it->hasID(id))
+        if (pipes[i].hasID(id))
         {
-            pipes.erase(it);
+            pipes.erase(pipes.begin() + i);
             logAction("Удалена труба");
             return;
         }
@@ -181,7 +168,7 @@ void searchPipes(vector<Pipe>& pipes)
     {
         cout << "Введите название: ";
         string name;
-        getline(cin >> ws, name);
+        INPUT_LINE(cin, name);
         found = FindByFilter(pipes, pipeNameFilter, name);
     }
     else
@@ -218,7 +205,7 @@ void saveData(const vector<Pipe>& pipes, const vector<Station>& stations)
 {
     cout << "Введите имя файла: ";
     string filename;
-    getline(cin >> ws, filename);
+    INPUT_LINE(cin, filename);
     ofstream out(filename);
     if (!out)
     {
@@ -248,7 +235,7 @@ void loadData(vector<Pipe>& pipes, vector<Station>& stations)
 {
     cout << "Введите имя файла: ";
     string filename;
-    getline(cin >> ws, filename);
+    INPUT_LINE(cin, filename);
     ifstream in(filename);
     if (!in)
     {

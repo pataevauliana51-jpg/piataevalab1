@@ -1,4 +1,3 @@
-
 #pragma once
 #include <iostream>
 #include <vector>
@@ -6,6 +5,26 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#define INPUT_LINE(in, str) getline(in >> std::ws, str); \
+                            std::cerr << str << std::endl
+class redirect_output_wrapper
+{
+    std::ostream& stream;
+    std::streambuf* const old_buf;
+public:
+    redirect_output_wrapper(std::ostream& src)
+        : stream(src), old_buf(src.rdbuf())
+    {
+    }
+    ~redirect_output_wrapper()
+    {
+        stream.rdbuf(old_buf);
+    }
+    void redirect(std::ostream& dest)
+    {
+        stream.rdbuf(dest.rdbuf());
+    }
+};
 template <typename T>
 T GetCorrectNumber(T min, T max)
 {
@@ -16,6 +35,7 @@ T GetCorrectNumber(T min, T max)
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "Введите число от " << min << " до " << max << ": ";
     }
+    std::cerr << x << std::endl;
     return x;
 }
 inline int& currentID()
@@ -47,9 +67,7 @@ std::vector<int> FindByFilter(const std::vector<T>& objects, Filter<T, P> filter
 }
 inline void logAction(const std::string& action)
 {
-    std::ofstream log("actions.log", std::ios::app);
-    if (log)
-        log << action << std::endl;
+    std::cerr << action << std::endl;
 }
 template <typename T>
 std::vector<int> selectObjects(const std::vector<T>& objects, const std::vector<int>& found)
